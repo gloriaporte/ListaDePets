@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import '../model/pet.dart';
-import '../util/dbhelper.dart';
+import 'package:firebase_database/firebase_database.dart';
 import './addpet.dart';
 import './deletepet.dart';
-
 
 class PetList extends StatefulWidget {
   @override
@@ -11,43 +10,37 @@ class PetList extends StatefulWidget {
 }
 
 class PetListState extends State<PetList> {
-  DbHelper helper = DbHelper();
+  final DatabaseReference _petsRef = FirebaseDatabase.instance.ref('pets');
   List<Pet>? pets;
   int count = 0;
 
-  // Método pra recuperar os dados
-  void getData() {
-    var dbFuture = helper.initializeDb();
+  void getData() async {
+    final DatabaseEvent event = await _petsRef.once();  // Obtém os dados do Firebase
+    final data = event.snapshot.value;
 
-    dbFuture.then((result) {
-      var petsFuture = helper.getPets();
+    if (data != null && data is Map) {  // Verifica se 'data' é um Map
+      Map<String, dynamic> petData = Map<String, dynamic>.from(data);
 
-      petsFuture.then((result) {
-        List<Pet> petList = <Pet>[];
-        count = result.length;
-
-        for (int i = 0; i < count; i++) {
-          petList.add(Pet.fromMap(result[i]));
-          debugPrint(petList[i].nome);
-        }
-
-        setState(() {
-          pets = petList;
-        });
-
-        debugPrint('Pets: ' + count.toString());
+      List<Pet> petList = [];
+      petData.forEach((key, value) {
+        petList.add(Pet.fromMap(value, key));  // Convertendo para objeto Pet
       });
-    });
+
+      setState(() {
+        pets = petList;
+        count = pets!.length;
+      });
+  }
+}
+
+  @override
+  void initState() {
+    super.initState();
+    getData();
   }
 
   @override
   Widget build(BuildContext context) {
-    if (pets == null) {
-      pets = <Pet>[];
-      getData();
-    }
-
-
     return Scaffold(
       appBar: AppBar(
         title: const Text('Lista de Pets'),
@@ -57,9 +50,8 @@ class PetListState extends State<PetList> {
         onPressed: () {
           Navigator.push(
               context,
-              MaterialPageRoute(
-                  builder: (context) => AddPet())).then((
-              result) {
+              MaterialPageRoute(builder: (context) => AddPet())
+          ).then((result) {
             if (result == true) {
               getData();
             }
@@ -89,10 +81,11 @@ class PetListState extends State<PetList> {
               icon: Icon(Icons.visibility),
               onPressed: () {
                 Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => DeletePet(pet: this.pets![position]))).then((
-                result) {
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => DeletePet(pet: this.pets![position])
+                    )
+                ).then((result) {
                   if (result == true) {
                     getData();
                   }
@@ -107,8 +100,4 @@ class PetListState extends State<PetList> {
       },
     );
   }
-
-
 }
-
-

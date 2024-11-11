@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "926762026617",
+    "project_id": "listadepets-gloriaporte",
+    "storage_bucket": "listadepets-gloriaporte.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:926762026617:android:a4c3349995ca3c29c5b6a8",
+        "android_client_info": {
+          "package_name": "com.example.lista_de_pets"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBw19Gaafd_ZSrkfRmOp8lqWR3FBFhk3pc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

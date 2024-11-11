@@ -40,7 +40,7 @@ class DeletePetState extends State<DeletePet> {
                 textStyle: const TextStyle(fontSize: 20),
               ),
               onPressed: () {
-                helper.deletePet(widget.pet.id!).then((result) {
+                helper.deletePet(widget.pet.id! as String).then((result) {
                   Navigator.pop(context, true);
                 });
               },

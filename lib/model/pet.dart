@@ -79,7 +79,7 @@ class Pet {
   }
 
   // Criar um objeto PET do Map
-  Pet.fromMap(dynamic o)
+  Pet.fromMap(dynamic o, key)
       : _id = o['id'],
         _nome = o['nome'],
         _sexo = o['sexo'],
